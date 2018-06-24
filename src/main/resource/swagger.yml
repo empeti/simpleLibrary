@@ -1,0 +1,164 @@
+swagger: '2.0'
+info:
+  description: Simple Library project for EPAM L2+ training
+  version: 1.0.0
+  title: Simple Library
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: mpeti.mpeti@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+- name: library
+  description: Simple library implementation
+- name: book
+  description: Book management for library
+- name: user
+  description: Operations about user
+# schemes:
+# - http
+paths:
+  /auth/login:
+    post:
+      tags:
+      - login
+      summary: Login to user account
+      operationId: loginUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: email
+        description: User's email address
+        required: true
+        schema:
+          $ref: '#/definitions/LoginData'
+      responses:
+        200:
+          description: successful login
+        404:
+          description: invalid email or password
+  /auth/logout:
+    get:
+      tags:
+      - logout
+      summary: Logout from user account
+      operationId: logoutUser
+      parameters:
+        - in: haeder
+          name: cookie
+          description: session for authenticated user
+          required: true
+      responses:
+        200:
+          description: OK
+  /user:
+    get:
+      description: Get the list of users
+      operationId: listUsers
+      produces:
+        - 'application/json'
+      responses:
+        200:
+          description: list of users
+          schema:
+            $ref: '#/definitions/userList'
+        404:
+          description: no user found
+    post:
+      description: Create a user
+    patch:
+      description: Suspend user account
+    put:
+      description: Modify user account
+  /user/{id}:
+    get:
+      description: Get user details
+    delete:
+      description: Delete user
+  /book:
+    get:
+      description: List books
+    post:
+      description: Create new book
+    put:
+      description: Modify book details
+  /book/{id}:
+    get:
+      description: Get book details
+    delete:
+      description: Delete this book
+  /book/{boookid}/user/{userid}:
+    get:
+      description: List users who have this book currently
+  /book/search:
+    get:
+      description: Search for books
+  /library/user/book/:
+    post:
+      description: List the books that a user have currently
+    patch:
+      description: Modify a borrow
+  /library/expirationnotification:
+    get:
+      description: Send out expiration notifications
+  /booksubscription/:
+    post:
+      description: Create subscription for a book
+  /booksubscription/notification:
+    get:
+      description: Send out notifications about book availability
+
+
+
+
+
+
+
+
+
+
+
+
+securityDefinitions:
+  library_auth:
+    type: basic
+    authorizationUrl: http://simplelibrary/login
+    flow: implicit
+    scopes:
+      write:user: modify user preferencies
+      read:user: read user preferencies
+definitions:
+  LoginData:
+    type: Object
+    properties:
+      email:
+        type: String
+        description: User's email address
+      password:
+        type: String
+        description: User's password
+  User:
+    type: Object
+    properties:
+      name:
+        type: String
+        description: Name of the user
+      email:
+        type: String
+        description: User's email address
+      type:
+        type: String
+        enum: ["reader", "librarian"]
+      status:
+        type: String
+        enum: ["active", "suspended", "deleted"]
+  userList:
+    type: Object
+    additionalProperties:
+      $ref: '#/definitions/User'
+
+
