@@ -82,6 +82,9 @@ paths:
           type: integer
     get:
       summary: Get user details
+      operationId: getUserDetails
+      tags:
+        - user
       responses:
         "200":
           description: User details successfully loaded
@@ -103,6 +106,9 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
     post:
       summary: Create a new user
+      operationId: createUser
+      tags:
+        - user
       responses:
         "200":
           description: User details successfully loaded
@@ -122,8 +128,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      summary: Suspend user
+      operationId: suspendUser
+      tags:
+        - user
+      responses:
+        "200":
+          description: User successfully deleted
+        "404":
+          description: User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     delete:
       summary: Detele user
+      operationId: deleteUser
+      tags:
+        - user
       responses:
         "200":
           description: User successfully deleted
