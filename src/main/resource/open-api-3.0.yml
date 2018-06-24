@@ -25,68 +25,183 @@ tags:
 paths:
   /auth/login:
     post:
-      summary: Login user
+      summary: Log in the user
       operationId: loginUser
       tags:
         - security
       responses:
-        '200':
+        "200":
           description: User successfully logged in
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
         default:
-          description: unexpected error
+          description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-  /pets/{petId}:
+                $ref: "#/components/schemas/ErrorResponse"
+      requestBody:
+        description: User authentication required
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/LoginRequest"
+  /auth/logout:
     get:
-      summary: Info for a specific pet
-      operationId: showPetById
+      summary: Log out the user
+      operationId: logoutUser
       tags:
-        - pets
-      parameters:
-        - name: petId
-          in: path
-          required: true
-          description: The id of the pet to retrieve
-          schema:
-            type: string
+        - security
       responses:
-        '200':
-          description: Expected response to a valid request
+        200:
+          description: User successfully logged out
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Pets"
+                $ref: '#/components/schemas/ApiResponse'
         default:
-          description: unexpected error
+          description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/ErrorResponse"
+  /user/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    get:
+      description: Get user details
+      responses:
+        "200":
+          description: User details successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "404":
+          description: User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      description: Create a new user
+      responses:
+        "200":
+          description: User details successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      description: Detele user
+      responses:
+        "200":
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "404":
+          description: User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
-    Pet:
+    UserResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - user
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+    User:
       required:
         - id
-        - name
+        - username
+        - email
       properties:
         id:
           type: integer
           format: int64
+        username:
+          type: string
+          description: Username of the user
+        email:
+          type: string
+          description: User's email address
+        type:
+          type: string
+          enum: ["reader", "librarian"]
+          description: User's role
+        status:
+          type: string
+          enum: ["active", "suspended", "deleted"]
+          description: User's status
         name:
           type: string
-        tag:
+          description: User's name
+    UserErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+        - type: object
+          required:
+            - user
+          properties:
+            fields:
+              type: array
+              items:
+                $ref: '#/components/schemas/UserFieldError'
+    UserFieldError:
+      required:
+        - fieldName
+        - errorMessage
+      properties:
+        fieldName:
           type: string
-    Pets:
-      type: array
-      items:
-        $ref: "#/components/schemas/Pet"
-    Error:
+        errorMessage:
+          type: string
+    LoginRequest:
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    ErrorResponse:
       required:
         - code
         - message
@@ -100,7 +215,7 @@ components:
       type: object
       required:
         - code
-        - message
+        - type
       properties:
         code:
           type: integer
