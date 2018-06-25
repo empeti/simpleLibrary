@@ -79,6 +79,12 @@ paths:
       operationId: getUserList
       tags:
         - user
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
       responses:
         "200":
           description: Limited amount of users are given back
