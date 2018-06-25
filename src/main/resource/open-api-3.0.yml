@@ -55,7 +55,7 @@ paths:
               oneOf:
                 - $ref: "#/components/schemas/LoginRequest"
   /auth/logout:
-    get:
+    post:
       summary: Log out the user
       operationId: logoutUser
       tags:
@@ -73,6 +73,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /user:
+    get:
+      summary: Listing users
+      operationId: getUserList
+      tags:
+        - user
+      responses:
+        "200":
+          description: Limited amount of users are given back
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /user/{id}:
     parameters:
       - in: path
@@ -179,6 +199,17 @@ components:
       in: cookie
       name: JSESSIONID
   schemas:
+    UserListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          required:
+            - users
+          properties:
+            users:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
     UserResponse:
       allOf:
         - $ref: '#/components/schemas/ApiResponse'
@@ -190,7 +221,6 @@ components:
               $ref: '#/components/schemas/User'
     User:
       required:
-        - id
         - username
         - email
       properties:
@@ -250,6 +280,27 @@ components:
           format: int32
         message:
           type: string
+    PaginatedResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            pagination:
+              $ref: '#/components/schemas/Pagination'
+    Pagination:
+      properties:
+        page:
+          type: integer
+          format: int64
+          description: current page of the full list
+        pages:
+          type: integer
+          format: int64
+          description: the number of the pages
+        limit:
+          type: integer
+          format: int64
+          description: current limit
     ApiResponse:
       type: object
       required:
