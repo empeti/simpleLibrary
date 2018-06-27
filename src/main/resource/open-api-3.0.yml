@@ -146,7 +146,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserErrorResponse"
+                $ref: "#/components/schemas/CreationErrorResponse"
         default:
           description: Unexpected error
           content:
@@ -345,12 +345,12 @@ components:
         isbn:
           type: string
           description: Unique number for a given book
-    UserErrorResponse:
+    CreationErrorResponse:
       allOf:
         - $ref: '#/components/schemas/ErrorResponse'
         - type: object
           required:
-            - user
+            - fields
           properties:
             fields:
               type: array
