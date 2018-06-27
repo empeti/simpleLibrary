@@ -160,7 +160,7 @@ paths:
         - user
       responses:
         "200":
-          description: User successfully deleted
+          description: User successfully suspended
         "404":
           description: User details not found
           content:
@@ -271,6 +271,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreationErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update a book
+      operationId: updateBook
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book successfully updated
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreationErrorResponse"
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         default:
           description: Unexpected error
           content:
