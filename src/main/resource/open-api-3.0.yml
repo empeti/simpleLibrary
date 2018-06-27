@@ -475,6 +475,14 @@ components:
         isbn:
           type: string
           description: Unique number for a given book
+        currentStock:
+          type: integer
+          format: int64
+          description: Shows how many copy we have in stock
+        maximumStock:
+          type: integer
+          format: int64
+          description: Shows how many copy could we have maximum in stock
     SaveErrorResponse:
       allOf:
         - $ref: '#/components/schemas/ErrorResponse'
