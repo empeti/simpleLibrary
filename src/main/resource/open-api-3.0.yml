@@ -98,7 +98,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
   /user/{id}:
     parameters:
       - in: path
@@ -198,6 +197,62 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /book:
+    get:
+      summary: Listing books
+      operationId: getBookList
+      tags:
+        - book
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Limited amount of books are given back
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookListResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /book/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get book details
+      operationId: getBookDetails
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book details successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   securitySchemes:
     cookieAuth:
@@ -250,6 +305,46 @@ components:
         name:
           type: string
           description: User's name
+    BookListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          required:
+            - books
+          properties:
+            books:
+              type: array
+              items:
+                $ref: '#/components/schemas/Book'
+    BookResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - book
+          properties:
+            book:
+              $ref: '#/components/schemas/Book'
+    Book:
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+          description: Title of the book
+        summary:
+          type: string
+          description: Short summary for the book's content
+        author:
+          type: string
+          description: Author of the book
+        year:
+          type: integer
+          format: int64
+        isbn:
+          type: string
+          description: Unique number for a given book
     UserErrorResponse:
       allOf:
         - $ref: '#/components/schemas/ErrorResponse'
