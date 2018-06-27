@@ -486,6 +486,32 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/BorrowRequest"
+    patch:
+      summary: Extend a book
+      operationId: extendBookBorrowTime
+      tags:
+        - library
+      responses:
+        "200":
+          description: Book successfully borrowed
+        "404":
+          description: Book/User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      requestBody:
+        description: Extend borrow time of a book with bookId for the user with userId for given amount of days
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExtendBorrowRequest"
 components:
   securitySchemes:
     cookieAuth:
@@ -606,6 +632,17 @@ components:
           type: string
         errorMessage:
           type: string
+    ExtendBorrowRequest:
+      allOf:
+        - $ref: '#/components/schemas/BorrowRequest'
+        - type: object
+          required:
+            - day
+          properties:
+            day:
+              type: integer
+              format: int64
+              description: The amount of days we wanted to extend borrow time
     BorrowRequest:
       required:
         - userId
