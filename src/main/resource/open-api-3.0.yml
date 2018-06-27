@@ -596,8 +596,8 @@ components:
             fields:
               type: array
               items:
-                $ref: '#/components/schemas/UserFieldError'
-    UserFieldError:
+                $ref: '#/components/schemas/FieldError'
+    FieldError:
       required:
         - fieldName
         - errorMessage
