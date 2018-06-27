@@ -512,6 +512,38 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/ExtendBorrowRequest"
+  /library/user/{userId}/book/{bookId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: bookId
+        required: true
+        schema:
+          type: integer
+    delete:
+      summary: Return a borrowed book (close book)
+      operationId: returnBorrowBook
+      tags:
+        - library
+      responses:
+        "200":
+          description: Book successfully returned
+        "404":
+          description: Book/User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   securitySchemes:
     cookieAuth:
