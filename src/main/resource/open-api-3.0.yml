@@ -157,7 +157,7 @@ paths:
       summary: Update a User
       operationId: updateUser
       tags:
-        - book
+        - user
       responses:
         "200":
           description: User successfully updated
