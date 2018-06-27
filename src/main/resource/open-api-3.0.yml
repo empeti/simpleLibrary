@@ -253,6 +253,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create a new book
+      operationId: createBook
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book details successfully saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreationErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   securitySchemes:
     cookieAuth:
