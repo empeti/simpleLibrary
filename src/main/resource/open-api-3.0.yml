@@ -248,6 +248,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /book/search:
+    parameters:
+      - in: query
+        name: q
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Search for books by title/author
+      operationId: searchBooks
+      tags:
+        - book
+      responses:
+        "200":
+          description: Limited amount of books are given back
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookListResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /book/{id}:
     parameters:
       - in: path
