@@ -278,6 +278,44 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /book/{bookId}/user:
+    parameters:
+      - in: path
+        name: bookId
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Returns the list of users activly borrowing the given book
+      operationId: getRentalUserForBook
+      tags:
+        - book
+      responses:
+        "200":
+          description: Returns the list of users
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - users
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /book/{id}:
     parameters:
       - in: path
