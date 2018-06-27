@@ -303,6 +303,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Detele book
+      operationId: deleteBook
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   securitySchemes:
     cookieAuth:
