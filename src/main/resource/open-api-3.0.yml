@@ -544,6 +544,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /library/expirationNotifocation:
+    get:
+      summary: Send expiration notifications
+      operationId: expirationNotifocation
+      tags:
+        - library
+      responses:
+        "200":
+          description: Returns the amount of email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailNotification"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   securitySchemes:
     cookieAuth:
@@ -551,6 +570,11 @@ components:
       in: cookie
       name: JSESSIONID
   schemas:
+    EmailNotification:
+      properties:
+        amount:
+          type: integer
+          format: int64
     UserListResponse:
       allOf:
         - $ref: '#/components/schemas/PaginatedResponse'
