@@ -255,6 +255,11 @@ paths:
         required: true
         schema:
           type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
     get:
       summary: Search for books by title/author
       operationId: searchBooks
