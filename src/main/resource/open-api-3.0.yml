@@ -153,6 +153,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update a User
+      operationId: updateUser
+      tags:
+        - book
+      responses:
+        "200":
+          description: User successfully updated
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveErrorResponse"
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     patch:
       summary: Suspend user
       operationId: suspendUser
