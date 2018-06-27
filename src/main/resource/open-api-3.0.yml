@@ -136,7 +136,7 @@ paths:
         - user
       responses:
         "200":
-          description: User details successfully loaded
+          description: User details successfully created
           content:
             application/json:
               schema:
