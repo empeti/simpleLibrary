@@ -496,6 +496,10 @@ paths:
       responses:
         "200":
           description: Book successfully borrowed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BorrowBookResponse"
         "404":
           description: Book/User details not found
           content:
@@ -688,6 +692,17 @@ components:
           properties:
             book:
               $ref: '#/components/schemas/Book'
+    BorrowBookResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - book
+          properties:
+            bookId:
+              type: integer
+              format: int64
+              description: Id of the borrowed book
     Book:
       properties:
         id:
@@ -707,7 +722,7 @@ components:
           format: int64
         isbn:
           type: string
-          description: Unique number for a given book
+          description: International Standard Book Number
         currentStock:
           type: integer
           format: int64
