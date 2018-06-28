@@ -459,7 +459,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /library/user/book:
+  /library/book/{id}:
+    post:
+      summary: Subscribe to a certain book
+      operationId: subscribeToBook
+      tags:
+        - library
+        - subscribe
+      responses:
+        "200":
+          description: successfully subscribed to a book
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      requestBody:
+        description: Subscribe a user to a book
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscribeRequest"
+  /library/user/{id}:
     post:
       summary: Borrow a book
       operationId: borrowBook
@@ -563,6 +591,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /library/subscriptionNotifocation:
+    get:
+      summary: Send subscription notifications
+      operationId: subscriptionNotifocation
+      tags:
+        - library
+      responses:
+        "200":
+          description: Returns the amount of email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailNotification"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   securitySchemes:
     cookieAuth:
@@ -689,27 +737,33 @@ components:
         errorMessage:
           type: string
     ExtendBorrowRequest:
-      allOf:
-        - $ref: '#/components/schemas/BorrowRequest'
-        - type: object
-          required:
-            - day
-          properties:
-            day:
-              type: integer
-              format: int64
-              description: The amount of days we wanted to extend borrow time
+      required:
+        - bookId
+        - day
+      properties:
+        bookId:
+          type: integer
+          format: int64
+        day:
+          type: integer
+          format: int64
+          description: The amount of days we wanted to extend borrow time
     BorrowRequest:
       required:
+        - bookIsbn
+      properties:
+        bookIsbn:
+          type: integer
+          format: int64
+          description: "Use ISBN here for handle stock"
+    SubscribeRequest:
+      required:
         - userId
-        - bookId
       properties:
         userId:
           type: integer
           format: int64
-        bookId:
-          type: integer
-          format: int64
+          description: "ID for user who wants to subscribe to a book"
     LoginRequest:
       properties:
         username:
