@@ -460,6 +460,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
   /library/book/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
     post:
       summary: Subscribe to a certain book
       operationId: subscribeToBook
@@ -488,6 +494,12 @@ paths:
             schema:
               $ref: "#/components/schemas/SubscribeRequest"
   /library/user/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
     post:
       summary: Borrow a book
       operationId: borrowBook
