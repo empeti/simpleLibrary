@@ -248,6 +248,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create a new book
+      operationId: createBook
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book details successfully saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /book/search:
     parameters:
       - in: query
@@ -385,30 +409,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-    post:
-      summary: Create a new book
-      operationId: createBook
-      tags:
-        - book
-      responses:
-        "200":
-          description: Book details successfully saved
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BookResponse'
-        "403":
-          description: Invalid client data
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SaveErrorResponse"
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
     put:
       summary: Update a book
       operationId: updateBook
@@ -466,12 +466,11 @@ paths:
         required: true
         schema:
           type: integer
-    post:
+    put:
       summary: Subscribe to a certain book
       operationId: subscribeToBook
       tags:
         - library
-        - subscribe
       responses:
         "200":
           description: successfully subscribed to a book
@@ -500,7 +499,7 @@ paths:
         required: true
         schema:
           type: integer
-    post:
+    put:
       summary: Borrow a book
       operationId: borrowBook
       tags:
