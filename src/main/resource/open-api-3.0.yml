@@ -5,7 +5,7 @@ servers:
     url: https://virtserver.swaggerhub.com/igazl/simple-library/1.0.0
 info:
   description: Simple Library project for EPAM L2+ training
-  version: "1.0.0"
+  version: "1.0.3"
   title: Simple Library
   termsOfService: 'http://swagger.io/terms/'
   contact:
@@ -40,7 +40,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/LoginResponse'
+
         default:
           description: Unexpected error
           content:
@@ -52,12 +53,17 @@ paths:
         content:
           application/json:
             schema:
-              oneOf:
-                - $ref: "#/components/schemas/LoginRequest"
+              $ref: "#/components/schemas/LoginRequest"
   /auth/logout:
-    post:
+    delete:
       summary: Log out the user
       operationId: logoutUser
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
       tags:
         - security
       responses:
@@ -74,6 +80,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
   /user:
+    parameters:
+      - in: header
+        name: token
+        schema:
+          type: string
+        required: true
     get:
       summary: Listing users
       operationId: getUserList
@@ -98,37 +110,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /user/{id}:
-    parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-    get:
-      summary: Get user details
-      operationId: getUserDetails
-      tags:
-        - user
-      responses:
-        "200":
-          description: User details successfully loaded
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserResponse'
-        "404":
-          description: User details not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
     post:
       summary: Create a new user
       operationId: createUser
@@ -147,6 +128,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SaveErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /user/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+      - in: header
+        name: token
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Get user details
+      operationId: getUserDetails
+      tags:
+        - user
+      responses:
+        "200":
+          description: User details successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "404":
+          description: User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         default:
           description: Unexpected error
           content:
@@ -251,6 +268,12 @@ paths:
     post:
       summary: Create a new book
       operationId: createBook
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
       tags:
         - book
       responses:
@@ -309,6 +332,11 @@ paths:
         required: true
         schema:
           type: integer
+      - in: header
+        name: token
+        schema:
+          type: string
+        required: true
     get:
       summary: Returns the list of users activly borrowing the given book
       operationId: getRentalUserForBook
@@ -347,6 +375,11 @@ paths:
         required: true
         schema:
           type: integer
+      - in: header
+        name: token
+        schema:
+          type: string
+        required: true
     get:
       summary: Returns the list of book which are active for given user
       operationId: getBooksForRentalUser
@@ -412,6 +445,12 @@ paths:
     put:
       summary: Update a book
       operationId: updateBook
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
       tags:
         - book
       responses:
@@ -438,6 +477,12 @@ paths:
     delete:
       summary: Detele book
       operationId: deleteBook
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
       tags:
         - book
       responses:
@@ -459,10 +504,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /library/book/{id}:
+  /library/subscription/book/{isbn}:
     parameters:
       - in: path
-        name: id
+        name: isbn
         required: true
         schema:
           type: integer
@@ -492,10 +537,10 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/SubscribeRequest"
-  /library/user/{id}:
+  /library/borrow/user/{userId}:
     parameters:
       - in: path
-        name: id
+        name: userId
         required: true
         schema:
           type: integer
@@ -529,6 +574,13 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/BorrowRequest"
+  /library/extension/user/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
     patch:
       summary: Extend a book
       operationId: extendBookBorrowTime
@@ -555,7 +607,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/ExtendBorrowRequest"
-  /library/user/{userId}/book/{bookId}:
+  /library/close/user/{userId}/book/{bookId}:
     parameters:
       - in: path
         name: userId
@@ -796,14 +848,18 @@ components:
           type: string
         password:
           type: string
+    LoginResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+      required:
+        - token
+      properties:
+        token:
+          type: string
     ErrorResponse:
       required:
-        - code
         - message
       properties:
-        code:
-          type: integer
-          format: int32
         message:
           type: string
     PaginatedResponse:
@@ -829,14 +885,6 @@ components:
           description: current limit
     ApiResponse:
       type: object
-      required:
-        - code
-        - type
       properties:
-        code:
-          type: integer
-          format: int32
-        type:
-          type: string
         message:
           type: string
