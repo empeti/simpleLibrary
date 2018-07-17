@@ -1,0 +1,890 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/igazl/simple-library/1.0.0
+info:
+  description: Simple Library project for EPAM L2+ training
+  version: "1.0.3"
+  title: Simple Library
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: mpeti.mpeti@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+security:
+  - cookieAuth:
+    - read
+    - write
+tags:
+- name: security
+  description: Security components
+- name: library
+  description: Library manaegement
+- name: book
+  description: Book management for library
+- name: user
+  description: Operations about user
+paths:
+  /auth/login:
+    post:
+      summary: Log in the user
+      operationId: loginUser
+      security: []
+      tags:
+        - security
+      responses:
+        "200":
+          description: User successfully logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      requestBody:
+        description: User authentication required
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+  /auth/logout:
+    delete:
+      summary: Log out the user
+      operationId: logoutUser
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      tags:
+        - security
+      responses:
+        200:
+          description: User successfully logged out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /user:
+    parameters:
+      - in: header
+        name: token
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Listing users
+      operationId: getUserList
+      tags:
+        - user
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Limited amount of users are given back
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create a new user
+      operationId: createUser
+      tags:
+        - user
+      responses:
+        "200":
+          description: User details successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /user/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+      - in: header
+        name: token
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Get user details
+      operationId: getUserDetails
+      tags:
+        - user
+      responses:
+        "200":
+          description: User details successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "404":
+          description: User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update a User
+      operationId: updateUser
+      tags:
+        - user
+      responses:
+        "200":
+          description: User successfully updated
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveErrorResponse"
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      summary: Suspend user
+      operationId: suspendUser
+      tags:
+        - user
+      responses:
+        "200":
+          description: User successfully suspended
+        "404":
+          description: User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Detele user
+      operationId: deleteUser
+      tags:
+        - user
+      responses:
+        "200":
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        "404":
+          description: User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /book:
+    get:
+      summary: Listing books
+      operationId: getBookList
+      tags:
+        - book
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Limited amount of books are given back
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookListResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create a new book
+      operationId: createBook
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book details successfully saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /book/search:
+    parameters:
+      - in: query
+        name: q
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+    get:
+      summary: Search for books by title/author
+      operationId: searchBooks
+      tags:
+        - book
+      responses:
+        "200":
+          description: Limited amount of books are given back
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookListResponse'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /book/{bookId}/user:
+    parameters:
+      - in: path
+        name: bookId
+        required: true
+        schema:
+          type: integer
+      - in: header
+        name: token
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Returns the list of users activly borrowing the given book
+      operationId: getRentalUserForBook
+      tags:
+        - book
+      responses:
+        "200":
+          description: Returns the list of users
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - users
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /book/user/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+      - in: header
+        name: token
+        schema:
+          type: string
+        required: true
+    get:
+      summary: Returns the list of book which are active for given user
+      operationId: getBooksForRentalUser
+      tags:
+        - book
+      responses:
+        "200":
+          description: Returns the list of books
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - books
+                properties:
+                  books:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+        "404":
+          description: User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /book/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get book details
+      operationId: getBookDetails
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book details successfully loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update a book
+      operationId: updateBook
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book successfully updated
+        "403":
+          description: Invalid client data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveErrorResponse"
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Detele book
+      operationId: deleteBook
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      tags:
+        - book
+      responses:
+        "200":
+          description: Book successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookResponse'
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /library/subscription/book/{isbn}:
+    parameters:
+      - in: path
+        name: isbn
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Subscribe to a certain book
+      operationId: subscribeToBook
+      tags:
+        - library
+      responses:
+        "200":
+          description: successfully subscribed to a book
+        "404":
+          description: Book details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      requestBody:
+        description: Subscribe a user to a book
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscribeRequest"
+  /library/borrow/user/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+    put:
+      summary: Borrow a book
+      operationId: borrowBook
+      tags:
+        - library
+      responses:
+        "200":
+          description: Book successfully borrowed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BorrowBookResponse"
+        "404":
+          description: Book/User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      requestBody:
+        description: Borrow the book with bookId for user with userId
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BorrowRequest"
+  /library/extension/user/{userId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+    patch:
+      summary: Extend a book
+      operationId: extendBookBorrowTime
+      tags:
+        - library
+      responses:
+        "200":
+          description: Book successfully borrowed
+        "404":
+          description: Book/User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      requestBody:
+        description: Extend borrow time of a book with bookId for the user with userId for given amount of days
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExtendBorrowRequest"
+  /library/close/user/{userId}/book/{bookId}:
+    parameters:
+      - in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+      - in: path
+        name: bookId
+        required: true
+        schema:
+          type: integer
+    delete:
+      summary: Return a borrowed book (close book)
+      operationId: returnBorrowBook
+      tags:
+        - library
+      responses:
+        "200":
+          description: Book successfully returned
+        "404":
+          description: Book/User details not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /library/expirationNotifocation:
+    get:
+      summary: Send expiration notifications
+      operationId: expirationNotifocation
+      tags:
+        - library
+      responses:
+        "200":
+          description: Returns the amount of email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailNotification"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /library/subscriptionNotifocation:
+    get:
+      summary: Send subscription notifications
+      operationId: subscriptionNotifocation
+      tags:
+        - library
+      responses:
+        "200":
+          description: Returns the amount of email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmailNotification"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: JSESSIONID
+  schemas:
+    EmailNotification:
+      properties:
+        amount:
+          type: integer
+          format: int64
+    UserListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          required:
+            - users
+          properties:
+            users:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+    UserResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - user
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+    User:
+      required:
+        - username
+        - email
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+          description: Username of the user
+        email:
+          type: string
+          description: User's email address
+        type:
+          type: string
+          enum: ["reader", "librarian"]
+          description: User's role
+        status:
+          type: string
+          enum: ["active", "suspended", "deleted"]
+          description: User's status
+        name:
+          type: string
+          description: User's name
+    BookListResponse:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          required:
+            - books
+          properties:
+            books:
+              type: array
+              items:
+                $ref: '#/components/schemas/Book'
+    BookResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - book
+          properties:
+            book:
+              $ref: '#/components/schemas/Book'
+    BorrowBookResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          required:
+            - book
+          properties:
+            bookId:
+              type: integer
+              format: int64
+              description: Id of the borrowed book
+    Book:
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+          description: Title of the book
+        summary:
+          type: string
+          description: Short summary for the book's content
+        author:
+          type: string
+          description: Author of the book
+        year:
+          type: integer
+          format: int64
+        isbn:
+          type: string
+          description: International Standard Book Number
+        currentStock:
+          type: integer
+          format: int64
+          description: Shows how many copy we have in stock
+        maximumStock:
+          type: integer
+          format: int64
+          description: Shows how many copy could we have maximum in stock
+    SaveErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ErrorResponse'
+        - type: object
+          required:
+            - fields
+          properties:
+            fields:
+              type: array
+              items:
+                $ref: '#/components/schemas/FieldError'
+    FieldError:
+      required:
+        - fieldName
+        - errorMessage
+      properties:
+        fieldName:
+          type: string
+        errorMessage:
+          type: string
+    ExtendBorrowRequest:
+      required:
+        - bookId
+        - day
+      properties:
+        bookId:
+          type: integer
+          format: int64
+        day:
+          type: integer
+          format: int64
+          description: The amount of days we wanted to extend borrow time
+    BorrowRequest:
+      required:
+        - bookIsbn
+      properties:
+        bookIsbn:
+          type: integer
+          format: int64
+          description: "Use ISBN here for handle stock"
+    SubscribeRequest:
+      required:
+        - userId
+      properties:
+        userId:
+          type: integer
+          format: int64
+          description: "ID for user who wants to subscribe to a book"
+    LoginRequest:
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    LoginResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+      required:
+        - token
+      properties:
+        token:
+          type: string
+    ErrorResponse:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+    PaginatedResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            pagination:
+              $ref: '#/components/schemas/Pagination'
+    Pagination:
+      properties:
+        page:
+          type: integer
+          format: int64
+          description: current page of the full list
+        pages:
+          type: integer
+          format: int64
+          description: the number of the pages
+        limit:
+          type: integer
+          format: int64
+          description: current limit
+    ApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
